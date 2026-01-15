@@ -1,19 +1,36 @@
 // src/pages/CourseMapPage.tsx
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
 import { useDragScroll } from '../hooks/useDragScroll';
 import { ArrowLeft, Star, Calendar, RefreshCw, MapPin } from 'lucide-react';
 
 const CourseMapPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { itinerary } = useItinerary();
+
+  // 보기 전용 모드 (gift-view에서 온 경우)
+  const isViewOnly = location.state?.viewOnly ?? false;
 
   // 드래그 스크롤 ref
   const cardScrollRef = useDragScroll<HTMLDivElement>();
 
+  // 카드 refs (스크롤용)
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   // 현재 선택된 장소 인덱스
   const [selectedPlaceIndex, setSelectedPlaceIndex] = useState(0);
+
+  // 마커 클릭 시 해당 카드로 스크롤
+  const handleMarkerClick = (idx: number) => {
+    setSelectedPlaceIndex(idx);
+    cardRefs.current[idx]?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'center'
+    });
+  };
 
   if (!itinerary) return <div className="p-10 text-center">데이터가 없습니다 :(</div>;
 
@@ -22,7 +39,7 @@ const CourseMapPage = () => {
 
       {/* 헤더 */}
       <div className="h-14 flex items-center px-4 bg-white/90 backdrop-blur-sm sticky top-0 z-20 border-b border-gray-100">
-        <button onClick={() => navigate(-1)} className="p-1">
+        <button onClick={() => navigate(isViewOnly ? '/gift-view' : '/result')} className="p-1">
           <ArrowLeft className="w-6 h-6 text-black" />
         </button>
         <span className="font-bold text-lg ml-2">코스 상세</span>
@@ -53,7 +70,7 @@ const CourseMapPage = () => {
                 return (
                   <div
                     key={place.id}
-                    onClick={() => setSelectedPlaceIndex(idx)}
+                    onClick={() => handleMarkerClick(idx)}
                     className={`absolute w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold cursor-pointer transition-all ${
                       selectedPlaceIndex === idx
                         ? 'bg-blue-500 text-white scale-125 shadow-lg'
@@ -113,6 +130,7 @@ const CourseMapPage = () => {
               {itinerary.places.map((place, index) => (
                 <div
                   key={place.id}
+                  ref={(el) => { cardRefs.current[index] = el; }}
                   onClick={() => setSelectedPlaceIndex(index)}
                   className={`w-[280px] bg-white rounded-xl p-3 snap-center flex-shrink-0 transition-all cursor-pointer shadow-xl ${
                     selectedPlaceIndex === index
@@ -165,16 +183,18 @@ const CourseMapPage = () => {
                       <Calendar size={14} className="text-gray-400" />
                       예약
                     </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/chat-edit', { state: { place } });
-                      }}
-                      className="flex-1 py-2 border border-gray-200 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 flex justify-center items-center gap-1 transition-colors"
-                    >
-                      <RefreshCw size={14} className="text-gray-400" />
-                      변경
-                    </button>
+                    {!isViewOnly && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/chat-edit', { state: { place } });
+                        }}
+                        className="flex-1 py-2 border border-gray-200 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 flex justify-center items-center gap-1 transition-colors"
+                      >
+                        <RefreshCw size={14} className="text-gray-400" />
+                        변경
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

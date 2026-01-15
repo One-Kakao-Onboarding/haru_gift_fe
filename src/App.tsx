@@ -6,7 +6,6 @@ import IntroPage from './pages/IntroPage.tsx';
 import PlannerPage from './pages/PlannerPage.tsx';
 import ChatEditPage from './pages/ChatEditPage.tsx';
 import PlaceDetailPage from './pages/PlaceDetailPage.tsx';
-import GiftViewPage from './pages/GiftViewPage.tsx';
 import CourseMapPage from './pages/CourseMapPage.tsx';
 
 function App() {
@@ -39,7 +38,7 @@ function App() {
             <Route path="/place-detail" element={<PlaceDetailPage />} />
             <Route path="/result" element={<ResultPage />} />
             <Route path="/course-map" element={<CourseMapPage />} />
-            <Route path="/gift-view" element={<GiftViewPage />} />
+            <Route path="/gift-view" element={<ResultPage />} />
           </Routes>
         </BrowserRouter>
       

@@ -31,8 +31,8 @@ const PlaceDetailPage = () => {
     // 2. 전역 상태 업데이트
     updatePlace(originalPlaceId, updatedPlace);
 
-    // 3. CourseMapPage로 복귀 (ChatEditPage 건너뛰기)
-    navigate('/course-map');
+    // 3. CourseMapPage로 복귀 (히스토리 교체로 chat-edit, place-detail 제거)
+    navigate('/course-map', { replace: true });
   };
 
   if (!newPlaceData) return <div>데이터가 없습니다.</div>;

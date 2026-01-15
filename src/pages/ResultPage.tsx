@@ -1,13 +1,17 @@
 // src/pages/ResultPage.tsx
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
 import { useDragScroll } from '../hooks/useDragScroll';
 import { X } from 'lucide-react';
 
 const ResultPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { itinerary, letter, setLetter, setGiftSent } = useItinerary();
+
+  // 보기 전용 모드 (gift-view 경로일 때)
+  const isViewOnly = location.pathname === '/gift-view';
 
   // 드래그 스크롤 ref
   const cardScrollRef = useDragScroll<HTMLDivElement>();
@@ -23,7 +27,7 @@ const ResultPage = () => {
 
   // 코스 카드 클릭 → 코스 맵 페이지로 이동
   const handleCourseCardClick = () => {
-    navigate('/course-map');
+    navigate('/course-map', { state: { viewOnly: isViewOnly } });
   };
 
   return (
@@ -53,7 +57,7 @@ const ResultPage = () => {
             {/* 1. 코스 카드 */}
             <div
               onClick={handleCourseCardClick}
-              className="w-[80vw] max-w-[340px] h-[50vh] bg-gray-100 rounded-2xl overflow-hidden relative cursor-pointer snap-center flex-shrink-0 shadow-lg active:scale-[0.98] transition-transform"
+              className="w-[80vw] max-w-[340px] h-[50vh] bg-gray-100 rounded-2xl overflow-hidden relative snap-center flex-shrink-0 shadow-lg transition-transform cursor-pointer active:scale-[0.98]"
             >
               {/* 배경 이미지 */}
               <img
@@ -85,16 +89,24 @@ const ResultPage = () => {
                 {itinerary.targetName}에게
               </h3>
               <p className="text-gray-400 text-sm mb-4">
-                소중한 하루에 대한 설명과 마음이 담긴 편지를 작성해보세요
+                {isViewOnly
+                  ? '함께 온 메시지'
+                  : '소중한 하루에 대한 설명과 마음이 담긴 편지를 작성해보세요'}
               </p>
 
-              {/* 편지 입력 영역 */}
-              <textarea
-                value={letter}
-                onChange={(e) => setLetter(e.target.value)}
-                placeholder="여기에 마음을 담아 편지를 써보세요..."
-                className="flex-1 w-full bg-white border border-gray-200 rounded-xl p-4 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-yellow-300 leading-relaxed"
-              />
+              {/* 편지 영역 - 보기 전용 or 편집 가능 */}
+              {isViewOnly ? (
+                <div className="flex-1 w-full bg-white border border-gray-200 rounded-xl p-4 text-sm leading-relaxed text-gray-700 overflow-y-auto whitespace-pre-wrap">
+                  {letter || '편지가 없습니다.'}
+                </div>
+              ) : (
+                <textarea
+                  value={letter}
+                  onChange={(e) => setLetter(e.target.value)}
+                  placeholder="여기에 마음을 담아 편지를 써보세요..."
+                  className="flex-1 w-full bg-white border border-gray-200 rounded-xl p-4 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-yellow-300 leading-relaxed"
+                />
+              )}
             </div>
 
           </div>
@@ -102,21 +114,32 @@ const ResultPage = () => {
 
         {/* 하단 버튼 영역 */}
         <div className="p-4 pb-8 flex gap-3 border-t border-gray-100">
-          <button
-            onClick={() => alert('저장되었습니다!')}
-            className="flex-1 py-4 bg-gray-100 text-gray-700 font-bold rounded-xl text-base hover:bg-gray-200 transition-colors"
-          >
-            저장하기
-          </button>
-          <button
-            onClick={() => {
-              setGiftSent(true);
-              navigate('/');
-            }}
-            className="flex-1 py-4 bg-kakao-yellow text-black font-bold rounded-xl text-base hover:bg-yellow-400 transition-colors"
-          >
-            선물하기
-          </button>
+          {isViewOnly ? (
+            <button
+              onClick={() => alert('예약 기능은 준비중입니다!')}
+              className="flex-1 py-4 bg-kakao-yellow text-black font-bold rounded-xl text-base hover:bg-yellow-400 transition-colors"
+            >
+              코스 예약하기
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => alert('저장되었습니다!')}
+                className="flex-1 py-4 bg-gray-100 text-gray-700 font-bold rounded-xl text-base hover:bg-gray-200 transition-colors"
+              >
+                저장하기
+              </button>
+              <button
+                onClick={() => {
+                  setGiftSent(true);
+                  navigate('/');
+                }}
+                className="flex-1 py-4 bg-kakao-yellow text-black font-bold rounded-xl text-base hover:bg-yellow-400 transition-colors"
+              >
+                선물하기
+              </button>
+            </>
+          )}
         </div>
       </div>
 
