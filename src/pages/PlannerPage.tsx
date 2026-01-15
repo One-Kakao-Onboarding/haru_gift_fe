@@ -11,8 +11,8 @@ import type { Place, Itinerary } from '../types.ts';
 const CATEGORY_OPTIONS = [
   { label: '음식점', icon: <Utensils size={20} />, type: '식사' },
   { label: '카페', icon: <Coffee size={20} />, type: '카페' },
-  { label: '영화관', icon: <Clapperboard size={20} />, type: '문화' },
-  { label: '전시', icon: <Ticket size={20} />, type: '문화' },
+  { label: '문화시설', icon: <Clapperboard size={20} />, type: '문화시설' },
+  { label: '관광명소', icon: <Ticket size={20} />, type: '관광명소' },
   { label: '숙소', icon: <BedDouble size={20} />, type: '숙소' },
 ];
 
@@ -122,7 +122,8 @@ const PlannerPage = () => {
       const newItinerary: Itinerary = {
         id: `trip_${Date.now()}`,
         theme: purpose || '힐링 여행',
-        targetName: '루아', // 이건 앞단에서 받아오거나 하드코딩
+        region: region || '서울',
+        targetName: '루아',
         places: generatedPlaces,
         finalLetter: ''
       };

@@ -252,7 +252,7 @@ const ChatPage = () => {
         <div className="flex items-center gap-3">
           <ArrowLeft className="w-6 h-6 text-black cursor-pointer" />
           <div className="flex items-center gap-2">
-            <span className="font-bold text-lg">여친님❤️</span>
+            <span className="font-bold text-lg">루아❤️</span>
             <span className="text-gray-500 text-xs">2</span>
           </div>
         </div>
@@ -283,7 +283,7 @@ const ChatPage = () => {
               </div>
             )}
             <div className="flex flex-col gap-1 max-w-[70%]">
-              {msg.sender === 'ai' && <span className="text-xs text-gray-500 ml-1">여친님❤️</span>}
+              {msg.sender === 'ai' && <span className="text-xs text-gray-500 ml-1">루아❤️</span>}
               <div className="flex items-end gap-1">
                 {msg.sender === 'me' && (
                    <span className="text-[10px] text-gray-500 min-w-max mb-1">{msg.timestamp}</span>
@@ -348,14 +348,13 @@ const ChatPage = () => {
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-gray-400">하루선물</p>
                   <p className="text-sm font-medium truncate">
-                    {itinerary.theme || '특별한'} {itinerary.places[0]?.location?.split(' ')[0] || '서촌'} 코스
+                    {itinerary.theme} {itinerary.region} 코스
                   </p>
                 </div>
               </div>
 
-              {/* 메시지 영역 */}
               <div className="p-4">
-                <div className="flex items-start gap-2 mb-3">
+                {/* <div className="flex items-start gap-2 mb-3">
                   <span className="text-pink-500">💌</span>
                   <div>
                     <p className="text-sm font-medium text-gray-800">함께 온 메시지</p>
@@ -363,19 +362,12 @@ const ChatPage = () => {
                       "{letter || itinerary.finalLetter || '특별한 하루를 선물해요'}"
                     </p>
                   </div>
-                </div>
-
-                <p className="text-[10px] text-gray-400 mb-3">
-                  1월 15일 까지 확인해주세요.
-                </p>
+                </div> */}
 
                 {/* 버튼들 */}
                 <div className="flex flex-col gap-2">
-                  <button className="w-full py-2.5 bg-gray-100 rounded-lg text-sm font-medium text-gray-700">
-                    주문내역 보기
-                  </button>
                   <button className="w-full py-2.5 bg-gray-100 rounded-lg text-sm font-medium text-gray-700 flex items-center justify-center gap-1">
-                    <span className="text-pink-500">💌</span> 메시지카드 열기
+                    <span className="text-pink-500">💌</span> 선물 열기
                   </button>
                 </div>
               </div>
@@ -384,7 +376,7 @@ const ChatPage = () => {
               <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-xs text-gray-400">
                   <span>🎁</span>
-                  <span>카카오톡 선물하기</span>
+                  <span>카카오톡 하루선물</span>
                 </div>
                 <span className="text-gray-300">›</span>
               </div>

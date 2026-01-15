@@ -70,9 +70,8 @@ const ResultPage = () => {
               {/* 텍스트 오버레이 */}
               <div className="absolute top-8 left-6 right-6">
                 <h2 className="text-4xl font-bold text-black leading-snug">
-                  {itinerary.theme || '특별한'}<br/>
-                  {itinerary.targetName}와의 기념일<br/>
-                  {itinerary.places[0]?.location?.split(' ')[0] || '서촌'} 나들이
+                  {itinerary.theme}<br/>
+                  {itinerary.region} 나들이
                 </h2>
               </div>
             </div>

@@ -17,9 +17,10 @@ export interface Place {
 // 2. 전체 여행 데이터 (Itinerary)
 export interface Itinerary {
   id: string;
-  theme: string;          // "힐링", "먹방" 등
-  targetName: string;     // 누구에게 줄 선물인가? (ex: "지민")
-  places: Place[];        
+  theme: string;          // "100일 기념", "힐링" 등 (목적)
+  region: string;         // "을지로", "서촌" 등 (지역)
+  targetName: string;     // 누구에게 줄 선물인가? (ex: "루아")
+  places: Place[];
   finalLetter?: string;   // 마지막 편지 내용
 }
 
