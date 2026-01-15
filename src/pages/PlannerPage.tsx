@@ -103,7 +103,7 @@ const PlannerPage = () => {
       // 1. API 요청 데이터 구성
       const courseStructure = planItems.map(item => item.label);
 
-      // 2. API 호출 (5~15초 소요)
+      // 2. 코스 생성 API 호출 (5~15초 소요)
       const apiResponse = await generateCourse({
         region: region,
         purpose: purpose,
@@ -111,7 +111,7 @@ const PlannerPage = () => {
         user_request: additionalReq || `${purpose} 데이트 코스를 추천해주세요.`,
       });
 
-      // 3. API 응답 → Place[] 변환
+      // 3. API 응답 → Place[] 변환 (image_url 포함)
       const generatedPlaces = transformApiResponseToPlaces(apiResponse);
 
       // 4. 전체 코스 데이터 생성
@@ -143,7 +143,7 @@ const PlannerPage = () => {
 
   // 3. 단계별 화면 렌더링
   return (
-    <div className="flex flex-col h-full bg-white relative">
+    <div className="flex flex-col h-full bg-white relative font-kakao">
       
       {/* 상단 네비게이션 */}
       <div className="h-14 flex items-center px-4 border-b border-gray-100">
@@ -324,8 +324,7 @@ const PlannerPage = () => {
             </div>
             <p className="text-lg font-bold text-gray-800 mb-2">AI가 코스를 만들고 있어요</p>
             <p className="text-sm text-gray-400 text-center">
-              장소를 검색하고 이미지를 생성하는 중이에요<br/>
-              약 10초 정도 걸려요 ✨
+              최적의 장소를 찾고 있어요...
             </p>
           </motion.div>
         )}

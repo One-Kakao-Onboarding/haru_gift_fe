@@ -2,6 +2,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
 import { ArrowLeft, Star, MapPin, Share2 } from 'lucide-react';
+import uljiroMap from '../assets/uljiro_map.png';
 import type { Place } from '../types';
 
 const PlaceDetailPage = () => {
@@ -81,9 +82,9 @@ const PlaceDetailPage = () => {
             매일 아침 공수하는 신선한 재료로 셰프가 직접 요리합니다.
           </p>
           
-          {/* 가짜 지도 영역 */}
-          <div className="w-full h-40 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400">
-            <MapPin className="mr-1" /> 지도 View
+          {/* 지도 영역 */}
+          <div className="w-full h-40 rounded-xl overflow-hidden">
+            <img src={uljiroMap} alt="을지로 지도" className="w-full h-full object-cover" />
           </div>
         </div>
       </div>

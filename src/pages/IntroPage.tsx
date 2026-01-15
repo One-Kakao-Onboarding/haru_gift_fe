@@ -7,7 +7,7 @@ const IntroPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col h-full bg-white relative animate-fade-in">
+    <div className="flex flex-col h-full bg-white relative animate-fade-in font-kakao">
       
       {/* 1. 상단 헤더 (모달 느낌) */}
       <div className="h-14 flex items-center justify-center relative">

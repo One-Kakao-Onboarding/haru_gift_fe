@@ -60,7 +60,7 @@ const ChatEditPage = () => {
     setIsTyping(true);
 
     try {
-      // 실제 API 호출
+      // API 호출
       const apiResponse = await generateCourse({
         region: itinerary?.region || '서울',
         purpose: itinerary?.theme || '데이트',
@@ -68,6 +68,7 @@ const ChatEditPage = () => {
         user_request: `${currentPlace.category} 장소를 변경하고 싶어요. ${userInput}`,
       });
 
+      // API 응답을 카드로 변환 (image_url 포함)
       const cards = apiResponse.map(transformToCard);
 
       setChatHistory(prev => [

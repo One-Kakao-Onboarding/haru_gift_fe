@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
 import { useDragScroll } from '../hooks/useDragScroll';
 import { ArrowLeft, Star, Calendar, RefreshCw, MapPin, Lightbulb } from 'lucide-react';
+import uljiroMap from '../assets/uljiro_map.png';
 // import { parseCoordinates } from '../services/api.ts';
 
 const CourseMapPage = () => {
@@ -51,11 +52,11 @@ const CourseMapPage = () => {
 
         {/* 지도 영역 (더미) - 전체 화면 */}
         <div className="absolute inset-0 bg-gray-200 overflow-hidden">
-          {/* 실제 지도 대신 더미 이미지 */}
+          {/* 을지로 지도 이미지 */}
           <img
-            src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop"
-            alt="map placeholder"
-            className="w-full h-full object-cover opacity-30"
+            src={uljiroMap}
+            alt="을지로 지도"
+            className="w-full h-full object-cover"
           />
 
           {/* 지도 위 마커들 (더미 위치) */}

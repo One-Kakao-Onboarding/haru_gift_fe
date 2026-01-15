@@ -32,7 +32,7 @@ const ResultPage = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white relative">
+    <div className="flex flex-col h-full bg-white relative font-kakao">
 
       {/* 헤더 */}
       <div className="h-14 flex items-center justify-center px-4 bg-white sticky top-0 z-20 relative">
@@ -75,7 +75,7 @@ const ResultPage = () => {
 
               {/* 텍스트 오버레이 */}
               <div className="absolute top-8 left-6 right-6">
-                <h2 className="text-4xl font-bold text-black leading-snug" style={{ fontFamily: 'KakaoBigSans' }}>
+                <h2 className="text-4xl font-kakao font-extrabold text-black leading-snug">
                   {itinerary.theme}<br/>
                   {itinerary.region}<br/>
                   나들이

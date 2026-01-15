@@ -20,7 +20,7 @@ export default {
         'kakao-bg': '#bacee0', // 채팅방 하늘색 배경
       },
       fontFamily: {
-        // 한글 폰트는 나중에 적용, 일단 시스템 폰트
+        'kakao': ['KakaoBigSans', 'sans-serif'],
       }
     },
   },
