@@ -1,6 +1,6 @@
 <div align="center">
 
-# 하루선물 (Haru Gift)
+# 카카오 하루선물 (Haru Gift)
 
 **AI가 만들어주는 특별한 하루, 카카오톡으로 선물하세요**
 
