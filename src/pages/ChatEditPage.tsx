@@ -5,7 +5,7 @@ import { ArrowLeft, Send, Star, MapPin } from 'lucide-react';
 import type { Place } from '../types';
 import { useItinerary, type ChatSessionMsg } from '../context/ItineraryContext';
 import DragScrollContainer from '../components/DragScrollContainer';
-import { generateCourse, parseTags, type ApiPlaceResponse } from '../services/api';
+import { generateCourse, parseTags, getLocalImage, type ApiPlaceResponse } from '../services/api';
 
 // API 응답을 카드 형식으로 변환
 const transformToCard = (data: ApiPlaceResponse) => ({
@@ -17,7 +17,7 @@ const transformToCard = (data: ApiPlaceResponse) => ({
   tags: parseTags(data.tags),
   reviewCount: data.review_count,
   rating: data.rating,
-  img: data.image_url,
+  img: getLocalImage(data.course_type),
   address: data.address,
   coordinates: data.coordinates,
   reason: data.reason,

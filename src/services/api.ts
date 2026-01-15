@@ -206,6 +206,63 @@ export const generateCourse = async (
 
 import type { Place } from '../types';
 
+// 카테고리별 로컬 이미지 (import.meta.glob으로 동적 로드)
+const koreanFoodImages = Object.values(
+  import.meta.glob('../assets/images/korean_food/*.jpg', { eager: true, import: 'default' })
+) as string[];
+
+const americanFoodImages = Object.values(
+  import.meta.glob('../assets/images/american_food/*.jpg', { eager: true, import: 'default' })
+) as string[];
+
+const cafeteriaImages = Object.values(
+  import.meta.glob('../assets/images/cafeteria/*.jpg', { eager: true, import: 'default' })
+) as string[];
+
+const cultureImages = Object.values(
+  import.meta.glob('../assets/images/culture/*.jpg', { eager: true, import: 'default' })
+) as string[];
+
+const cinemaImages = Object.values(
+  import.meta.glob('../assets/images/cinema/*.jpg', { eager: true, import: 'default' })
+) as string[];
+
+const houseImages = Object.values(
+  import.meta.glob('../assets/images/house/*.jpg', { eager: true, import: 'default' })
+) as string[];
+
+// 카테고리별 이미지 풀
+const CATEGORY_IMAGES: Record<string, string[]> = {
+  '음식점': [...koreanFoodImages, ...americanFoodImages],
+  '카페': cafeteriaImages,
+  '문화시설': [...cultureImages, ...cinemaImages],
+  '숙소': houseImages,
+};
+
+// 카테고리별 인덱스 카운터 (순차적으로 돌려쓰기)
+const categoryIndexCounter: Record<string, number> = {
+  '음식점': 0,
+  '카페': 0,
+  '문화시설': 0,
+  '숙소': 0,
+};
+
+// 카테고리에 맞는 로컬 이미지 반환 (순차적으로 돌려씀)
+export const getLocalImage = (category: string): string => {
+  const images = CATEGORY_IMAGES[category] || CATEGORY_IMAGES['음식점'];
+  const currentIndex = categoryIndexCounter[category] || 0;
+  const image = images[currentIndex % images.length];
+  categoryIndexCounter[category] = currentIndex + 1;
+  return image;
+};
+
+// 인덱스 카운터 리셋 (새로운 코스 생성 시 호출)
+export const resetImageCounters = () => {
+  Object.keys(categoryIndexCounter).forEach(key => {
+    categoryIndexCounter[key] = 0;
+  });
+};
+
 export const transformApiResponseToPlace = (apiPlace: ApiPlaceResponse): Place => {
   return {
     id: `place_${apiPlace.step_order}_${Date.now()}`,
@@ -218,11 +275,12 @@ export const transformApiResponseToPlace = (apiPlace: ApiPlaceResponse): Place =
     rating: apiPlace.rating,
     reviewCount: apiPlace.review_count,
     intro: apiPlace.reason,
-    imageUrl: apiPlace.image_url,
+    imageUrl: getLocalImage(apiPlace.course_type),
     tags: parseTags(apiPlace.tags),
   };
 };
 
 export const transformApiResponseToPlaces = (response: CourseGenerateResponse): Place[] => {
+  resetImageCounters(); // 새 코스 생성 시 카운터 리셋
   return response.map(transformApiResponseToPlace);
 };
