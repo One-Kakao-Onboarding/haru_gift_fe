@@ -1,5 +1,5 @@
 // src/pages/CourseMapPage.tsx
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
 import { useDragScroll } from '../hooks/useDragScroll';
