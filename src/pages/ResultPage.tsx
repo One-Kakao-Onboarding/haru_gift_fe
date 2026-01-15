@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
 import { useDragScroll } from '../hooks/useDragScroll';
 import { X, Pencil } from 'lucide-react';
+import resultCardBg from '../assets/result_card.svg';
 
 const ResultPage = () => {
   const navigate = useNavigate();
@@ -57,29 +58,22 @@ const ResultPage = () => {
             {/* 1. 코스 카드 */}
             <div
               onClick={handleCourseCardClick}
-              className="w-[80vw] max-w-[340px] h-[50vh] bg-gray-100 rounded-2xl overflow-hidden relative snap-center flex-shrink-0 shadow-lg transition-transform cursor-pointer active:scale-[0.98]"
+              className="w-[70vw] max-w-[296px] aspect-[296/478] relative snap-center flex-shrink-0 transition-transform cursor-pointer active:scale-[0.98] drop-shadow-lg"
             >
-              {/* 배경 이미지 */}
+              {/* 배경 SVG */}
               <img
-                src={itinerary.places[0]?.imageUrl || 'https://images.unsplash.com/photo-1583307687252-4013d6a99284?q=80&w=800'}
-                alt="course"
-                className="w-full h-full object-cover"
+                src={resultCardBg}
+                alt="card background"
+                className="w-full h-full"
               />
 
-              {/* 하단 그라데이션 + 텍스트 */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                {/* 진행 바 */}
-                <div className="w-12 h-1 bg-red-500 rounded-full mb-4" />
-
-                <h2 className="text-white text-xl font-bold leading-tight mb-2">
-                  {itinerary.theme || '특별한 날'}의<br/>
-                  조용한 {itinerary.places[0]?.location?.split(' ')[0] || '서촌'} 나들이
+              {/* 텍스트 오버레이 */}
+              <div className="absolute top-8 left-6 right-6">
+                <h2 className="text-4xl font-bold text-black leading-snug">
+                  {itinerary.theme || '특별한'}<br/>
+                  {itinerary.targetName}와의 기념일<br/>
+                  {itinerary.places[0]?.location?.split(' ')[0] || '서촌'} 나들이
                 </h2>
-                <p className="text-white/80 text-sm leading-relaxed">
-                  함께여서 더 의미 있는,<br/>
-                  낭만이고 소박한 {itinerary.targetName}와의 하루
-                </p>
               </div>
             </div>
 
@@ -87,10 +81,10 @@ const ResultPage = () => {
             {isViewOnly ? (
               // 보기 전용 모드 - 편지 내용 표시
               <div
-                className="w-[80vw] max-w-[340px] h-[50vh] rounded-2xl p-6 snap-center flex-shrink-0 shadow-lg flex flex-col"
-                style={{ backgroundColor: '#FFD97C' }}
+                className="w-[70vw] max-w-[296px] aspect-[296/478] rounded-2xl p-6 snap-center flex-shrink-0 shadow-lg flex flex-col"
+                style={{ backgroundColor: '#019C59' }}
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-2xl font-bold text-white mb-2">
                   {itinerary.targetName}에게
                 </h3>
                 <p className="text-yellow-700/70 text-sm mb-4">함께 온 메시지</p>
@@ -102,13 +96,13 @@ const ResultPage = () => {
               // 편집 모드 - 클릭하면 편지 작성 페이지로 이동
               <div
                 onClick={() => navigate('/letter-write')}
-                className="w-[80vw] max-w-[340px] h-[50vh] rounded-2xl p-6 snap-center flex-shrink-0 shadow-lg flex flex-col cursor-pointer active:scale-[0.98] transition-transform relative"
-                style={{ backgroundColor: '#FFD97C' }}
+                className="w-[70vw] max-w-[296px] aspect-[296/478] rounded-2xl p-6 snap-center flex-shrink-0 shadow-lg flex flex-col cursor-pointer active:scale-[0.98] transition-transform relative"
+                style={{ backgroundColor: '#019C59' }}
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-3xl font-bold text-white mb-2">
                   {itinerary.targetName}에게
                 </h3>
-                <p className="text-yellow-700/70 text-sm leading-relaxed">
+                <p className="text-white/60 text-sm leading-relaxed">
                   소중한 하루에 대한 설명과 마음이<br/>
                   담긴 편지를 작성해보세요
                 </p>
@@ -124,7 +118,7 @@ const ResultPage = () => {
 
                 {/* 연필 아이콘 */}
                 <div className="absolute bottom-5 right-5">
-                  <Pencil className="w-5 h-5 text-yellow-700/50" />
+                  <Pencil className="w-5 h-5 text-white" />
                 </div>
               </div>
             )}

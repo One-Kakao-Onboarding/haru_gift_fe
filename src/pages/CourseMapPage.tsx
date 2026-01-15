@@ -132,7 +132,7 @@ const CourseMapPage = () => {
                   key={place.id}
                   ref={(el) => { cardRefs.current[index] = el; }}
                   onClick={() => setSelectedPlaceIndex(index)}
-                  className={`w-[280px] bg-white rounded-xl p-3 snap-center flex-shrink-0 transition-all cursor-pointer shadow-xl ${
+                  className={`w-[80vw] max-w-[360px] min-h-[160px] bg-white rounded-xl p-3 snap-center flex-shrink-0 transition-all cursor-pointer shadow-xl ${
                     selectedPlaceIndex === index
                       ? 'ring-2 ring-blue-500'
                       : 'border border-gray-100'
