@@ -1,73 +1,232 @@
-# React + TypeScript + Vite
+<div align="center">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 하루선물 (Haru Gift)
 
-Currently, two official plugins are available:
+**AI가 만들어주는 특별한 하루, 카카오톡으로 선물하세요**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<img src="src/assets/intro_poster.svg" width="280" alt="하루선물 포스터" />
 
-## React Compiler
+[![React](https://img.shields.io/badge/React-19.2.0-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+[데모 보기](#demo) · [시작하기](#getting-started) · [기능 소개](#features)
 
-## Expanding the ESLint configuration
+</div>
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### BE: https://github.com/One-Kakao-Onboarding/haru_gift_be
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 소개
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**하루선물**은 AI 기반의 맞춤형 데이트/여행 코스 추천 서비스입니다.
+
+사용자가 원하는 지역과 목적을 입력하면, AI가 레스토랑, 카페, 문화시설 등을 조합한 완벽한 코스를 추천해드립니다. 생성된 코스는 마음을 담은 메시지와 함께 소중한 사람에게 카카오톡 스타일로 선물할 수 있습니다.
+
+> 100일 기념일, 생일, 혹은 특별한 날을 위한 완벽한 하루를 선물하세요.
+
+---
+
+## 핵심 기능
+
+### AI 맞춤 코스 생성
+지역, 목적, 코스 구성을 선택하면 AI가 최적의 장소들을 추천합니다.
+
+### 3단계 간편 플래너
+1. **어디서?** - 지역 선택 (을지로, 서촌, 성수 등)
+2. **뭘 할까?** - 코스 구성 (음식점 → 카페 → 문화시설)
+3. **추가 요청** - 세부 요청사항 입력
+
+### 카카오톡 스타일 UI
+익숙한 카카오톡 인터페이스로 자연스러운 사용 경험을 제공합니다.
+
+### 장소 커스터마이징
+AI 추천이 마음에 들지 않으면 채팅으로 대체 장소를 요청할 수 있습니다.
+
+### 감성 레터 작성
+선물과 함께 전할 메시지를 5가지 컬러 테마로 꾸밀 수 있습니다.
+
+---
+
+## 스크린샷
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   [채팅 화면]        [코스 플래너]       [결과 카드]        [지도 뷰]        │
+│                                                                             │
+│   ┌─────────┐       ┌─────────┐       ┌─────────┐       ┌─────────┐        │
+│   │ 💬      │       │ Step 1  │       │ 🎁      │       │ 📍      │        │
+│   │ 카카오  │  →    │ 지역    │  →    │ 코스    │  →    │ MAP     │        │
+│   │ 스타일  │       │ 선택    │       │ 카드    │       │ VIEW    │        │
+│   └─────────┘       └─────────┘       └─────────┘       └─────────┘        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 기술 스택
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Category | Technologies |
+|----------|-------------|
+| **Framework** | React 19, TypeScript 5.9 |
+| **Build** | Vite 7.2 |
+| **Styling** | Tailwind CSS 3.4, Framer Motion |
+| **Routing** | React Router DOM 7 |
+| **State** | React Context API + localStorage |
+| **Icons** | Lucide React |
+| **Fonts** | KakaoBigSans |
+
+---
+
+## 시작하기
+
+### 요구사항
+
+- Node.js 18+
+- npm 또는 yarn
+
+### 설치
+
+```bash
+# 레포지토리 클론
+git clone https://github.com/your-username/haru-gift.git
+cd haru-gift
+
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
+npm run dev
 ```
+
+개발 서버가 `http://localhost:5173`에서 실행됩니다.
+
+### 빌드
+
+```bash
+# 프로덕션 빌드
+npm run build
+
+# 빌드 미리보기
+npm run preview
+```
+
+---
+
+## 프로젝트 구조
+
+```
+src/
+├── pages/                 # 페이지 컴포넌트
+│   ├── ChatPage.tsx       # 메인 채팅 화면
+│   ├── IntroPage.tsx      # 인트로 페이지
+│   ├── PlannerPage.tsx    # 3단계 코스 플래너
+│   ├── ResultPage.tsx     # 결과 카드 캐러셀
+│   ├── CourseMapPage.tsx  # 코스 지도 뷰
+│   ├── LetterWritePage.tsx# 레터 작성
+│   ├── ChatEditPage.tsx   # 장소 변경 채팅
+│   ├── PlaceDetailPage.tsx# 장소 상세 정보
+│   └── GiftViewPage.tsx   # 선물 보기
+│
+├── components/            # 재사용 컴포넌트
+├── hooks/                 # 커스텀 훅
+├── context/               # React Context
+├── services/              # API 서비스
+├── assets/                # 이미지, 폰트
+└── types.ts               # TypeScript 타입 정의
+```
+
+---
+
+## 주요 데이터 구조
+
+```typescript
+interface Place {
+  id: string
+  name: string
+  category: '음식점' | '카페' | '문화시설' | '숙소'
+  location: string
+  rating: number
+  intro: string      // AI 추천 이유
+  imageUrl: string
+}
+
+interface Itinerary {
+  id: string
+  theme: string      // "100일 기념", "힐링" 등
+  region: string     // "을지로", "서촌" 등
+  targetName: string // 선물 받는 사람
+  places: Place[]
+  finalLetter?: string
+}
+```
+
+---
+
+## API
+
+AI 코스 생성 API:
+
+```typescript
+// Request
+POST /webhook/{id}
+{
+  sessionId: string
+  region: string          // "을지로"
+  purpose: string         // "100일 기념"
+  course_structure: string[] // ["음식점", "카페", "문화시설"]
+  user_request: string    // 추가 요청사항
+}
+
+// Response
+[
+  {
+    step_order: 1,
+    place_name: "을지면옥",
+    category: "음식점",
+    rating: 4.5,
+    reason: "을지로에서 가장 유명한 평양냉면 맛집..."
+  },
+  // ...
+]
+```
+
+---
+
+## 스크립트
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | 개발 서버 실행 |
+| `npm run build` | 프로덕션 빌드 |
+| `npm run preview` | 빌드 미리보기 |
+| `npm run lint` | ESLint 검사 |
+
+---
+
+## 특징
+
+- **모바일 퍼스트** - 430px 기준 모바일 최적화 디자인
+- **드래그 스크롤** - 네이티브 앱 같은 모멘텀 스크롤
+- **오프라인 지원** - localStorage 기반 데이터 영속성
+- **애니메이션** - Framer Motion 기반 부드러운 전환 효과
+
+---
+
+## 라이선스
+
+MIT License
+
+---
+
+<div align="center">
+
+**Made with ❤️ for special moments**
+
+*하루를 선물하다*
+
+</div>
