@@ -93,6 +93,10 @@ interface ItineraryContextType {
   letter: string;
   setLetter: (text: string) => void;
 
+  // 👇 편지 배경색 저장
+  letterColor: string;
+  setLetterColor: (color: string) => void;
+
   // 👇 선물 전송 완료 상태
   giftSent: boolean;
   setGiftSent: (sent: boolean) => void;
@@ -114,6 +118,9 @@ export const ItineraryProvider = ({ children }: { children: ReactNode }) => {
 
   // 👇 편지 내용 상태
   const [letter, setLetterState] = useState<string>('');
+
+  // 👇 편지 배경색 상태
+  const [letterColor, setLetterColorState] = useState<string>('#019C59');
 
   // 👇 선물 전송 완료 상태
   const [giftSent, setGiftSentState] = useState<boolean>(false);
@@ -149,6 +156,11 @@ export const ItineraryProvider = ({ children }: { children: ReactNode }) => {
     setLetterState(text);
   };
 
+  // 👇 편지 배경색 저장
+  const setLetterColor = (color: string) => {
+    setLetterColorState(color);
+  };
+
   // 👇 선물 전송 완료
   const setGiftSent = (sent: boolean) => {
     setGiftSentState(sent);
@@ -159,6 +171,7 @@ export const ItineraryProvider = ({ children }: { children: ReactNode }) => {
     setItineraryState(null);
     setChatSessions({});
     setLetterState('');
+    setLetterColorState('#019C59');
     setGiftSentState(false);
   };
 
@@ -167,6 +180,7 @@ export const ItineraryProvider = ({ children }: { children: ReactNode }) => {
       itinerary, setItinerary, updatePlace,
       chatSessions, saveChatSession,
       letter, setLetter,
+      letterColor, setLetterColor,
       giftSent, setGiftSent,
       resetData
     }}>

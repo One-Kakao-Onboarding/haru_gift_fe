@@ -9,7 +9,7 @@ import resultCardBg from '../assets/result_card.svg';
 const ResultPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { itinerary, letter, setLetter, setGiftSent } = useItinerary();
+  const { itinerary, letter, setLetter, letterColor, setGiftSent } = useItinerary();
 
   // 보기 전용 모드 (gift-view 경로일 때)
   const isViewOnly = location.pathname === '/gift-view';
@@ -82,13 +82,13 @@ const ResultPage = () => {
               // 보기 전용 모드 - 편지 내용 표시
               <div
                 className="w-[70vw] max-w-[296px] aspect-[296/478] rounded-2xl p-6 snap-center flex-shrink-0 shadow-lg flex flex-col"
-                style={{ backgroundColor: '#019C59' }}
+                style={{ backgroundColor: letterColor }}
               >
                 <h3 className="text-2xl font-bold text-white mb-2">
                   {itinerary.targetName}에게
                 </h3>
-                <p className="text-yellow-700/70 text-sm mb-4">함께 온 메시지</p>
-                <div className="flex-1 w-full bg-white/80 rounded-xl p-4 text-sm leading-relaxed text-gray-700 overflow-y-auto whitespace-pre-wrap">
+                <p className="text-white/60 text-sm mb-4">함께 온 메시지</p>
+                <div className="flex-1 w-full rounded-xl text-sm leading-relaxed text-white overflow-y-auto whitespace-pre-wrap">
                   {letter || '편지가 없습니다.'}
                 </div>
               </div>
@@ -97,7 +97,7 @@ const ResultPage = () => {
               <div
                 onClick={() => navigate('/letter-write')}
                 className="w-[70vw] max-w-[296px] aspect-[296/478] rounded-2xl p-6 snap-center flex-shrink-0 shadow-lg flex flex-col cursor-pointer active:scale-[0.98] transition-transform relative"
-                style={{ backgroundColor: '#019C59' }}
+                style={{ backgroundColor: letterColor }}
               >
                 <h3 className="text-3xl font-bold text-white mb-2">
                   {itinerary.targetName}에게
@@ -110,7 +110,7 @@ const ResultPage = () => {
                 {/* 편지 미리보기 (작성된 경우) */}
                 {letter && (
                   <div className="mt-4 flex-1 overflow-hidden">
-                    <p className="text-sm text-gray-700 line-clamp-4 leading-relaxed">
+                    <p className="text-sm text-white/80 line-clamp-4 leading-relaxed">
                       {letter}
                     </p>
                   </div>
@@ -127,14 +127,9 @@ const ResultPage = () => {
         </div>
 
         {/* 하단 버튼 영역 */}
-        <div className="p-4 pb-8 flex gap-3 border-t border-gray-100">
+        <div className="p-4 pb-8 flex gap-3">
           {isViewOnly ? (
-            <button
-              onClick={() => alert('예약 기능은 준비중입니다!')}
-              className="flex-1 py-4 bg-kakao-yellow text-black font-bold rounded-xl text-base hover:bg-yellow-400 transition-colors"
-            >
-              코스 예약하기
-            </button>
+            <></>
           ) : (
             <>
               <button
