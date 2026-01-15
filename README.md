@@ -11,8 +11,6 @@
 [![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
-[데모 보기](#demo) · [시작하기](#getting-started) · [기능 소개](#features)
-
 </div>
 
 ### BE: https://github.com/One-Kakao-Onboarding/haru_gift_be
