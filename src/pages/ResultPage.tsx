@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
 import { useDragScroll } from '../hooks/useDragScroll';
-import { X } from 'lucide-react';
+import { X, Pencil } from 'lucide-react';
 
 const ResultPage = () => {
   const navigate = useNavigate();
@@ -84,30 +84,50 @@ const ResultPage = () => {
             </div>
 
             {/* 2. 편지 카드 */}
-            <div className="w-[80vw] max-w-[340px] h-[50vh] bg-gray-50 rounded-2xl p-6 snap-center flex-shrink-0 shadow-lg flex flex-col">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {itinerary.targetName}에게
-              </h3>
-              <p className="text-gray-400 text-sm mb-4">
-                {isViewOnly
-                  ? '함께 온 메시지'
-                  : '소중한 하루에 대한 설명과 마음이 담긴 편지를 작성해보세요'}
-              </p>
-
-              {/* 편지 영역 - 보기 전용 or 편집 가능 */}
-              {isViewOnly ? (
-                <div className="flex-1 w-full bg-white border border-gray-200 rounded-xl p-4 text-sm leading-relaxed text-gray-700 overflow-y-auto whitespace-pre-wrap">
+            {isViewOnly ? (
+              // 보기 전용 모드 - 편지 내용 표시
+              <div
+                className="w-[80vw] max-w-[340px] h-[50vh] rounded-2xl p-6 snap-center flex-shrink-0 shadow-lg flex flex-col"
+                style={{ backgroundColor: '#FFD97C' }}
+              >
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  {itinerary.targetName}에게
+                </h3>
+                <p className="text-yellow-700/70 text-sm mb-4">함께 온 메시지</p>
+                <div className="flex-1 w-full bg-white/80 rounded-xl p-4 text-sm leading-relaxed text-gray-700 overflow-y-auto whitespace-pre-wrap">
                   {letter || '편지가 없습니다.'}
                 </div>
-              ) : (
-                <textarea
-                  value={letter}
-                  onChange={(e) => setLetter(e.target.value)}
-                  placeholder="여기에 마음을 담아 편지를 써보세요..."
-                  className="flex-1 w-full bg-white border border-gray-200 rounded-xl p-4 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-yellow-300 leading-relaxed"
-                />
-              )}
-            </div>
+              </div>
+            ) : (
+              // 편집 모드 - 클릭하면 편지 작성 페이지로 이동
+              <div
+                onClick={() => navigate('/letter-write')}
+                className="w-[80vw] max-w-[340px] h-[50vh] rounded-2xl p-6 snap-center flex-shrink-0 shadow-lg flex flex-col cursor-pointer active:scale-[0.98] transition-transform relative"
+                style={{ backgroundColor: '#FFD97C' }}
+              >
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  {itinerary.targetName}에게
+                </h3>
+                <p className="text-yellow-700/70 text-sm leading-relaxed">
+                  소중한 하루에 대한 설명과 마음이<br/>
+                  담긴 편지를 작성해보세요
+                </p>
+
+                {/* 편지 미리보기 (작성된 경우) */}
+                {letter && (
+                  <div className="mt-4 flex-1 overflow-hidden">
+                    <p className="text-sm text-gray-700 line-clamp-4 leading-relaxed">
+                      {letter}
+                    </p>
+                  </div>
+                )}
+
+                {/* 연필 아이콘 */}
+                <div className="absolute bottom-5 right-5">
+                  <Pencil className="w-5 h-5 text-yellow-700/50" />
+                </div>
+              </div>
+            )}
 
           </div>
         </div>
