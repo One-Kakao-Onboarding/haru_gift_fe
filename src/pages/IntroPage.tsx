@@ -1,5 +1,4 @@
 // src/pages/IntroPage.tsx
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, Gift } from 'lucide-react';
 

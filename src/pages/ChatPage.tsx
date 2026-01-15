@@ -166,49 +166,15 @@
 // export default ChatPage;
 
 // src/pages/ChatPage.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
-import type { ChatMessage, Itinerary } from '../types';
-import { 
-  ArrowLeft, Menu, Search, Plus, 
-  Image as ImageIcon, Camera, Phone, Gift, 
+import type { ChatMessage } from '../types';
+import {
+  ArrowLeft, Menu, Search, Plus,
+  Image as ImageIcon, Camera, Phone, Gift,
   CreditCard, Gamepad2, MapPin, Smile
 } from 'lucide-react';
-
-// ⭐️ 시연용 가짜 데이터 (여자친구 취향 반영)
-const MOCK_RESULT: Itinerary = {
-  id: 'trip_001',
-  theme: '로맨틱&힐링',
-  targetName: '여친님',
-  places: [
-    {
-      id: 'p1',
-      order: 1,
-      name: '초당 할머니 순두부',
-      category: '아점',
-      location: '강원 강릉시 초당순두부길',
-      rating: 4.5,
-      reviewCount: 1203,
-      intro: '자극적이지 않고 고소한 찐 순두부 맛집',
-      imageUrl: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?q=80&w=800&auto=format&fit=crop',
-      userMemo: ''
-    },
-    {
-      id: 'p2',
-      order: 2,
-      name: '툇마루 커피',
-      category: '카페',
-      location: '강원 강릉시 난설헌로',
-      rating: 4.8,
-      reviewCount: 3400,
-      intro: '흑임자 라떼가 미쳤어요 (웨이팅 주의)',
-      imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=800&auto=format&fit=crop',
-      userMemo: ''
-    }
-  ],
-  finalLetter: '자기가 저번에 바다 보고 싶다고 했잖아! 그래서 웨이팅 있어도 맛있는 커피랑 힐링 코스로 짰어 ❤️'
-};
 
 // ⭐️ 리얼한 커플 대화 데이터 (20~30마디)
 const INITIAL_MESSAGES: ChatMessage[] = [
@@ -236,13 +202,13 @@ const INITIAL_MESSAGES: ChatMessage[] = [
 
 const ChatPage = () => {
   const navigate = useNavigate();
-  const { setItinerary } = useItinerary();
+  const { giftSent, itinerary, letter } = useItinerary();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
+  const [messages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // + 버튼 메뉴 토글
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+  const isLoading = false; // 로딩 상태 (현재 미사용)
 
   // 스크롤 자동 이동
   useEffect(() => {
@@ -347,6 +313,85 @@ const ChatPage = () => {
              </span>
            </div>
         )}
+
+        {/* 🎁 선물 카드 (선물 완료 시 표시) */}
+        {giftSent && itinerary && (
+          <div className="flex justify-end my-2">
+            <div
+              onClick={() => navigate('/gift-view')}
+              className="w-[280px] bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 cursor-pointer active:scale-[0.98] transition-transform"
+            >
+              {/* 상단 이미지 영역 */}
+              <div className="h-[160px] bg-gradient-to-br from-emerald-400 to-teal-500 relative overflow-hidden">
+                {/* 일러스트 배경 */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-white/20 text-8xl">🌳</div>
+                </div>
+                <div className="absolute top-4 left-4 text-white">
+                  <p className="text-lg font-bold leading-tight">
+                    조금 쉬었다가도<br/>괜찮아
+                  </p>
+                </div>
+                {/* 나무 이모지들 */}
+                <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-2 pb-2 text-3xl">
+                  🌲🌳🌲
+                </div>
+              </div>
+
+              {/* 장소 썸네일 */}
+              <div className="flex items-center gap-3 p-3 border-b border-gray-100">
+                <img
+                  src={itinerary.places[0]?.imageUrl}
+                  alt="place"
+                  className="w-12 h-12 rounded-lg object-cover"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-gray-400">하루선물</p>
+                  <p className="text-sm font-medium truncate">
+                    {itinerary.theme || '특별한'} {itinerary.places[0]?.location?.split(' ')[0] || '서촌'} 코스
+                  </p>
+                </div>
+              </div>
+
+              {/* 메시지 영역 */}
+              <div className="p-4">
+                <div className="flex items-start gap-2 mb-3">
+                  <span className="text-pink-500">💌</span>
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">함께 온 메시지</p>
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                      "{letter || itinerary.finalLetter || '특별한 하루를 선물해요'}"
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-[10px] text-gray-400 mb-3">
+                  1월 15일 까지 확인해주세요.
+                </p>
+
+                {/* 버튼들 */}
+                <div className="flex flex-col gap-2">
+                  <button className="w-full py-2.5 bg-gray-100 rounded-lg text-sm font-medium text-gray-700">
+                    주문내역 보기
+                  </button>
+                  <button className="w-full py-2.5 bg-gray-100 rounded-lg text-sm font-medium text-gray-700 flex items-center justify-center gap-1">
+                    <span className="text-pink-500">💌</span> 메시지카드 열기
+                  </button>
+                </div>
+              </div>
+
+              {/* 하단 */}
+              <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                  <span>🎁</span>
+                  <span>카카오톡 선물하기</span>
+                </div>
+                <span className="text-gray-300">›</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div ref={scrollRef} />
       </div>
 

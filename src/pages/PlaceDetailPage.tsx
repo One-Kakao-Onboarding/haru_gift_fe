@@ -1,8 +1,7 @@
 // src/pages/PlaceDetailPage.tsx
-import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
-import { ArrowLeft, Star, MapPin, Phone, Share2 } from 'lucide-react';
+import { ArrowLeft, Star, MapPin, Share2 } from 'lucide-react';
 import type { Place } from '../types';
 
 const PlaceDetailPage = () => {
@@ -32,9 +31,8 @@ const PlaceDetailPage = () => {
     // 2. 전역 상태 업데이트
     updatePlace(originalPlaceId, updatedPlace);
 
-    // 3. 이전 페이지로 복귀 (뎁스 1개만 벗어남)
-    alert('장소가 변경되었습니다! ✨');
-    navigate(-1);
+    // 3. CourseMapPage로 복귀 (ChatEditPage 건너뛰기)
+    navigate('/course-map');
   };
 
   if (!newPlaceData) return <div>데이터가 없습니다.</div>;

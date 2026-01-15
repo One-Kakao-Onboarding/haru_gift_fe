@@ -1,11 +1,13 @@
 // src/App.tsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ChatPage from './pages/ChatPage.tsx'; 
-import ResultPage from './pages/ResultPage.tsx'; 
-import IntroPage from './pages/IntroPage.tsx'; 
-import PlannerPage from './pages/PlannerPage.tsx'; 
+import ChatPage from './pages/ChatPage.tsx';
+import ResultPage from './pages/ResultPage.tsx';
+import IntroPage from './pages/IntroPage.tsx';
+import PlannerPage from './pages/PlannerPage.tsx';
 import ChatEditPage from './pages/ChatEditPage.tsx';
 import PlaceDetailPage from './pages/PlaceDetailPage.tsx';
+import GiftViewPage from './pages/GiftViewPage.tsx';
+import CourseMapPage from './pages/CourseMapPage.tsx';
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
             <Route path="/chat-edit" element={<ChatEditPage />} />
             <Route path="/place-detail" element={<PlaceDetailPage />} />
             <Route path="/result" element={<ResultPage />} />
+            <Route path="/course-map" element={<CourseMapPage />} />
+            <Route path="/gift-view" element={<GiftViewPage />} />
           </Routes>
         </BrowserRouter>
       

@@ -1,5 +1,5 @@
 // src/pages/PlannerPage.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
 import { ArrowLeft, X, Plus, GripVertical, Utensils, Coffee, Clapperboard, BedDouble, Ticket } from 'lucide-react';
@@ -23,6 +23,15 @@ interface PlanItem {
   type: string;
 }
 
+// 대화에서 추출된 키 포인트 (더미 데이터 - 나중에 LLM이 생성)
+const EXTRACTED_INSIGHTS = [
+  { id: '1', text: '양식은 잘 못 먹음' },
+  { id: '2', text: '조용하고 프라이빗한 공간 선호' },
+  { id: '3', text: '걷는 것을 좋아하지 않음' },
+  { id: '4', text: '사진 찍기 좋은 곳 선호' },
+  { id: '5', text: '예산은 10만원 내외' },
+];
+
 const PlannerPage = () => {
   const navigate = useNavigate();
   const { setItinerary } = useItinerary();
@@ -32,7 +41,7 @@ const PlannerPage = () => {
   const [region, setRegion] = useState('');
   const [purpose, setPurpose] = useState('');
   const [additionalReq, setAdditionalReq] = useState('');
-  
+
   // 드래그 앤 드롭을 위한 리스트 상태
   const [planItems, setPlanItems] = useState<PlanItem[]>([
     { id: 'default-1', label: '음식점', type: '식사' },
@@ -85,19 +94,6 @@ const PlannerPage = () => {
 //     }
 //   };
   const handleSubmit = () => {
-
-    // 1. 디버그용 데이터 확인 팝업
-    const debugData = {
-      step1_region: region,
-      step1_purpose: purpose,
-      step2_schedule: planItems,
-      step3_request: additionalReq
-    };
-    
-    const isConfirmed = window.confirm(
-      `[DEBUG: 데이터 확인]\n\n${JSON.stringify(debugData, null, 2)}\n\n이대로 코스를 생성할까요?`
-    );
-
     // 1. 사용자 입력(schedule)을 기반으로 실제 데이터(Random) 매핑
     const generatedPlaces: Place[] = planItems.map((item, index) => {
       const mockData = getRandomPlace(item.label); // '식사', '카페' 등으로 조회
@@ -241,17 +237,27 @@ const PlannerPage = () => {
             <span className="text-yellow-500 font-bold text-sm mb-1 block">Step 3</span>
             <h2 className="text-2xl font-bold mb-6">AI에게 부탁할<br/>특별한 점이 있나요?</h2>
             
-            <div className="bg-gray-50 rounded-xl p-4 h-64 border border-gray-100 focus-within:ring-2 focus-within:ring-yellow-300 transition-all">
-              <textarea 
+            <div className="bg-gray-50 rounded-xl p-4 h-[30vh] border border-gray-100 focus-within:ring-2 focus-within:ring-yellow-300 transition-all">
+              <textarea
                 className="w-full h-full bg-transparent resize-none outline-none text-base placeholder:text-gray-400 leading-relaxed"
-                placeholder="내 여자친구 루아는 양식을 못 먹고 조용한 곳을 좋아해. 특히 카페랑 음식점은 조용한 곳을 선호해. 그리고 걷는 걸 좋아하지 않아."
+                placeholder="추가로 알려줄 내용이 있다면 자유롭게 적어주세요..."
                 value={additionalReq}
                 onChange={(e) => setAdditionalReq(e.target.value)}
               />
             </div>
-            <p className="text-xs text-gray-400 mt-2 ml-1">
-              * 구체적으로 적을수록 만족스러운 결과가 나와요!
-            </p>
+
+            {/* 대화에서 추출된 키 포인트 */}
+            <div className="mt-6">
+              <p className="text-xs text-gray-500 mb-2">대화에서 파악한 내용</p>
+              <ul className="flex flex-col gap-1.5 text-sm text-gray-600">
+                {EXTRACTED_INSIGHTS.map((insight) => (
+                  <li key={insight.id} className="flex items-start gap-2">
+                    <span className="text-gray-400">•</span>
+                    <span>{insight.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </motion.div>
         )}
 

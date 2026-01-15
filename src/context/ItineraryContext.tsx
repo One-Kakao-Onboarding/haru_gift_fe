@@ -70,7 +70,7 @@
 //   return context;
 // };
 // src/context/ItineraryContext.tsx
-import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type { Itinerary, Place } from '../types';
 
 // 채팅 메시지 타입 재정의 (ChatEditPage에서 쓰는 것과 통일)
@@ -93,6 +93,10 @@ interface ItineraryContextType {
   letter: string;
   setLetter: (text: string) => void;
 
+  // 👇 선물 전송 완료 상태
+  giftSent: boolean;
+  setGiftSent: (sent: boolean) => void;
+
   resetData: () => void;
 }
 
@@ -110,6 +114,9 @@ export const ItineraryProvider = ({ children }: { children: ReactNode }) => {
 
   // 👇 편지 내용 상태
   const [letter, setLetterState] = useState<string>('');
+
+  // 👇 선물 전송 완료 상태
+  const [giftSent, setGiftSentState] = useState<boolean>(false);
 
   useEffect(() => {
     if (itinerary) {
@@ -142,18 +149,25 @@ export const ItineraryProvider = ({ children }: { children: ReactNode }) => {
     setLetterState(text);
   };
 
+  // 👇 선물 전송 완료
+  const setGiftSent = (sent: boolean) => {
+    setGiftSentState(sent);
+  };
+
   const resetData = () => {
     localStorage.removeItem(STORAGE_KEY);
     setItineraryState(null);
     setChatSessions({});
     setLetterState('');
+    setGiftSentState(false);
   };
 
   return (
     <ItineraryContext.Provider value={{
       itinerary, setItinerary, updatePlace,
       chatSessions, saveChatSession,
-      letter, setLetter, // 편지 내용 export
+      letter, setLetter,
+      giftSent, setGiftSent,
       resetData
     }}>
       {children}
