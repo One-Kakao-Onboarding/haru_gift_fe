@@ -3,7 +3,8 @@ import { useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
 import { useDragScroll } from '../hooks/useDragScroll';
-import { ArrowLeft, Star, Calendar, RefreshCw, MapPin } from 'lucide-react';
+import { ArrowLeft, Star, Calendar, RefreshCw, MapPin, Lightbulb } from 'lucide-react';
+import { parseCoordinates } from '../services/api';
 
 const CourseMapPage = () => {
   const navigate = useNavigate();
@@ -146,7 +147,9 @@ const CourseMapPage = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline gap-2">
                         <h4 className="font-bold text-gray-900 truncate text-sm">{place.name}</h4>
-                        <span className="text-[10px] text-gray-400 flex-shrink-0">{place.category}</span>
+                        <span className="text-[10px] text-gray-400 flex-shrink-0">
+                          {place.detailCategory || place.category}
+                        </span>
                       </div>
 
                       {/* 별점 + 리뷰 */}
@@ -161,15 +164,35 @@ const CourseMapPage = () => {
                             />
                           ))}
                         </div>
-                        <span className="text-[10px] text-gray-400">리뷰 {place.reviewCount}</span>
+                        <span className="text-[10px] text-gray-400">리뷰 {place.reviewCount?.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* 주소 + 상태 */}
-                  <div className="text-[10px] text-gray-500 mb-2 truncate">
-                    {place.location} · <span className="text-green-500">영업중</span>
+                  {/* 주소 */}
+                  <div className="flex items-center gap-1 text-[10px] text-gray-500 mb-2">
+                    <MapPin size={10} className="text-gray-400 flex-shrink-0" />
+                    <span className="truncate">{place.location}</span>
                   </div>
+
+                  {/* 태그 */}
+                  {place.tags && place.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {place.tags.slice(0, 3).map((tag, i) => (
+                        <span key={i} className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* AI 추천 사유 */}
+                  {place.intro && (
+                    <div className="flex items-start gap-1 mb-2 p-2 bg-blue-50 rounded-lg">
+                      <Lightbulb size={12} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-[10px] text-blue-600 line-clamp-2">{place.intro}</p>
+                    </div>
+                  )}
 
                   {/* 버튼 그룹 */}
                   <div className="flex gap-2">

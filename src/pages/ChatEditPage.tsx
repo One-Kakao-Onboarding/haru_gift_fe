@@ -5,47 +5,16 @@ import { ArrowLeft, Send, Star, MapPin } from 'lucide-react';
 import type { Place } from '../types';
 import { useItinerary, type ChatSessionMsg } from '../context/ItineraryContext';
 import DragScrollContainer from '../components/DragScrollContainer';
+import { generateCourse, parseTags, type ApiPlaceResponse } from '../services/api';
 
-// 백엔드 응답에서 오는 장소 데이터 타입
-interface BackendPlaceData {
-  step_order: number;
-  course_type: string;
-  place_name: string;
-  region: string;
-  category: string;
-  tags: string; // 쉼표로 구분된 문자열
-  review_count: number;
-  rating: number;
-  image_url: string;
-  address: string;
-  coordinates: string;
-  reason: string;
-}
-
-// 백엔드 응답에서 JSON 파싱하는 함수
-const parseBackendResponse = (reply: string): BackendPlaceData[] => {
-  try {
-    // ```json ... ``` 형태에서 JSON 부분만 추출
-    const jsonMatch = reply.match(/```json\s*([\s\S]*?)\s*```/);
-    if (jsonMatch && jsonMatch[1]) {
-      return JSON.parse(jsonMatch[1]);
-    }
-    // 코드 블록 없이 바로 JSON인 경우
-    return JSON.parse(reply);
-  } catch (error) {
-    console.error('Failed to parse backend response:', error);
-    return [];
-  }
-};
-
-// 백엔드 데이터를 카드 형식으로 변환
-const transformToCard = (data: BackendPlaceData) => ({
+// API 응답을 카드 형식으로 변환
+const transformToCard = (data: ApiPlaceResponse) => ({
   id: `place_${data.step_order}_${Date.now()}`,
   name: data.place_name,
   category: data.category,
   courseType: data.course_type,
   region: data.region,
-  tags: data.tags.split(',').map(t => t.trim()),
+  tags: parseTags(data.tags),
   reviewCount: data.review_count,
   rating: data.rating,
   img: data.image_url,
@@ -57,7 +26,7 @@ const transformToCard = (data: BackendPlaceData) => ({
 const ChatEditPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { chatSessions, saveChatSession } = useItinerary();
+  const { itinerary, chatSessions, saveChatSession } = useItinerary();
 
   const currentPlace = location.state?.place as Place;
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -90,56 +59,16 @@ const ChatEditPage = () => {
     setInput('');
     setIsTyping(true);
 
-    // TODO: 실제 백엔드 연결 시 이 부분 교체
-    // const response = await fetch('/api/chat', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ message: userInput, placeId: currentPlace.id })
-    // });
-    // const data = await response.json();
+    try {
+      // 실제 API 호출
+      const apiResponse = await generateCourse({
+        region: itinerary?.region || '서울',
+        purpose: itinerary?.theme || '데이트',
+        course_structure: [currentPlace.category], // 현재 장소의 카테고리만
+        user_request: `${currentPlace.category} 장소를 변경하고 싶어요. ${userInput}`,
+      });
 
-    // 더미 응답 (백엔드 응답 형식과 동일)
-    const mockResponse = {
-      reply: `\`\`\`json
-[
-  {
-    "step_order": 1,
-    "course_type": "음식점",
-    "place_name": "녁 (Nyeock)",
-    "region": "을지로",
-    "category": "이탈리안",
-    "tags": "분위기깡패, 기념일추천, 예약필수",
-    "review_count": 1240,
-    "rating": 4.5,
-    "image_url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=400",
-    "address": "서울 중구 수표로 52",
-    "coordinates": "37.5665, 126.9884",
-    "reason": "요청하신 '${userInput}'에 부합하는 레스토랑입니다."
-  },
-  {
-    "step_order": 2,
-    "course_type": "카페",
-    "place_name": "혜민당",
-    "region": "을지로",
-    "category": "베이커리",
-    "tags": "디저트맛집, 레트로, 감성카페",
-    "review_count": 3100,
-    "rating": 4.4,
-    "image_url": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=400",
-    "address": "서울 중구 삼일대로12길 16-9",
-    "coordinates": "37.5663, 126.9881",
-    "reason": "식사 후 가볍게 디저트를 즐기기 좋은 베이커리 카페입니다."
-  }
-]
-\`\`\``
-    };
-
-    // 응답 처리 시뮬레이션 (1.5초 딜레이)
-    setTimeout(() => {
-      setIsTyping(false);
-
-      const places = parseBackendResponse(mockResponse.reply);
-      const cards = places.map(transformToCard);
+      const cards = apiResponse.map(transformToCard);
 
       setChatHistory(prev => [
         ...prev,
@@ -149,7 +78,18 @@ const ChatEditPage = () => {
           cards: cards
         }
       ]);
-    }, 1500);
+    } catch (error) {
+      console.error('[ChatEdit] API 에러:', error);
+      setChatHistory(prev => [
+        ...prev,
+        {
+          type: 'ai',
+          text: '죄송해요, 장소를 찾는 중 오류가 발생했어요. 다시 시도해주세요.'
+        }
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   // 한글 두 번 입력 방지

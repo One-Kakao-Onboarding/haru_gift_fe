@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useItinerary } from '../context/ItineraryContext';
-import { ArrowLeft, X, Plus, GripVertical, Utensils, Coffee, Clapperboard, BedDouble, Ticket } from 'lucide-react';
+import { ArrowLeft, X, Plus, GripVertical, Utensils, Coffee, Clapperboard, BedDouble, Ticket, AlertCircle } from 'lucide-react';
 import { motion, Reorder, AnimatePresence } from 'framer-motion';
-import { getRandomPlace } from '../mockData.ts';
-import type { Place, Itinerary } from '../types.ts';
+import { generateCourse, transformApiResponseToPlaces, ApiError } from '../services/api';
+import type { Itinerary } from '../types';
 
 // 선택 가능한 카테고리 목록
 const CATEGORY_OPTIONS = [
@@ -50,6 +50,7 @@ const PlannerPage = () => {
 
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // 2. 기능 핸들러
   const handleNext = () => {
@@ -94,31 +95,27 @@ const PlannerPage = () => {
 //       navigate('/result');
 //     }
 //   };
-  const handleSubmit = () => {
-    // 로딩 시작
+  const handleSubmit = async () => {
+    // 로딩 시작 & 에러 초기화
     setIsLoading(true);
+    setError(null);
 
-    // 2.5초 후 실행
-    setTimeout(() => {
-      // 1. 사용자 입력(schedule)을 기반으로 실제 데이터(Random) 매핑
-      const generatedPlaces: Place[] = planItems.map((item, index) => {
-        const mockData = getRandomPlace(item.label); // '식사', '카페' 등으로 조회
+    try {
+      // 1. API 요청 데이터 구성
+      const courseStructure = planItems.map(item => item.label);
 
-        return {
-          id: item.id, // ID 유지
-          order: index + 1,
-          name: mockData.name || item.label, // 더미 데이터 없으면 기본 라벨
-          category: item.label,
-          location: mockData.location || region || '서울',
-          rating: mockData.rating || 4.5,
-          reviewCount: 100 + Math.floor(Math.random() * 500),
-          intro: mockData.intro || 'AI가 추천하는 핫플레이스',
-          imageUrl: mockData.imageUrl || 'https://source.unsplash.com/random/400x300/?korea,travel',
-          userMemo: ''
-        };
+      // 2. API 호출 (5~15초 소요)
+      const apiResponse = await generateCourse({
+        region: region,
+        purpose: purpose,
+        course_structure: courseStructure,
+        user_request: additionalReq || `${purpose} 데이트 코스를 추천해주세요.`,
       });
 
-      // 2. 전체 코스 데이터 생성
+      // 3. API 응답 → Place[] 변환
+      const generatedPlaces = transformApiResponseToPlaces(apiResponse);
+
+      // 4. 전체 코스 데이터 생성
       const newItinerary: Itinerary = {
         id: `trip_${Date.now()}`,
         theme: purpose || '힐링 여행',
@@ -128,11 +125,21 @@ const PlannerPage = () => {
         finalLetter: ''
       };
 
-      // 3. 저장 후 이동
+      // 5. 저장 후 이동
       setItinerary(newItinerary);
       setIsLoading(false);
       navigate('/result');
-    }, 2500);
+
+    } catch (err) {
+      setIsLoading(false);
+
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('알 수 없는 오류가 발생했습니다.');
+      }
+      console.error('[PlannerPage] 코스 생성 실패:', err);
+    }
   };
 
   // 3. 단계별 화면 렌더링
@@ -274,9 +281,16 @@ const PlannerPage = () => {
 
       {/* 하단 고정 버튼 */}
       <div className="absolute bottom-0 w-full bg-white p-4 border-t border-gray-50">
-        <button 
+        {/* 에러 메시지 */}
+        {error && (
+          <div className="flex items-center gap-2 mb-3 p-3 bg-red-50 border border-red-200 rounded-xl">
+            <AlertCircle size={18} className="text-red-500 flex-shrink-0" />
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
+        <button
           onClick={handleNext}
-          disabled={step === 1 && (!region || !purpose)} // 1단계 유효성 검사
+          disabled={step === 1 && (!region || !purpose)}
           className="w-full bg-[#FEE500] text-black font-bold py-4 rounded-xl text-lg hover:bg-yellow-400 transition-colors disabled:bg-gray-200 disabled:text-gray-400"
         >
           {step === 3 ? '코스 생성하기' : '다음'}
@@ -310,8 +324,11 @@ const PlannerPage = () => {
                 className="w-4 h-4 bg-[#FEE500] rounded-full"
               />
             </div>
-            <p className="text-lg font-bold text-gray-800 mb-2">코스를 만들고 있어요</p>
-            <p className="text-sm text-gray-400">잠시만 기다려주세요...</p>
+            <p className="text-lg font-bold text-gray-800 mb-2">AI가 코스를 만들고 있어요</p>
+            <p className="text-sm text-gray-400 text-center">
+              장소를 검색하고 이미지를 생성하는 중이에요<br/>
+              약 10초 정도 걸려요 ✨
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
